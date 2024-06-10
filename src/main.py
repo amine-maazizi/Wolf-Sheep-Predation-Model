@@ -29,7 +29,7 @@ def index():
 
 
 if __name__ == '__main__':
-    run_without_flask = False
+    run_without_flask = True
 
     if run_without_flask:
         train_population()

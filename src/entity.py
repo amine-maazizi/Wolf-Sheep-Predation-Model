@@ -120,12 +120,6 @@ class Entity(ABC):
             rotation_angle = self.walk_rotation_amount * math.sin(self.animation_timer * self.walk_animation_speed)
             self.sprite = pg.transform.rotate(self.original_sprite, rotation_angle)
             self.rect = self.sprite.get_rect(center=self.rect.center)
-              
-    def respawn(self):
-        self.is_alive = True
-        self.energy = MAX_ENERGY
-        self.survival_time = 0.0
-        self.child_number = 0  
             
     def save(self, path: str):
         # save neural network weights

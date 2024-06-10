@@ -3,7 +3,7 @@ import numpy as np
 import sys
 
 from config import *
-from entity import Entity
+from entity import Entity, Types
 from sheep import Sheep
 from wolf import Wolf
 from enivroment import Environment
@@ -12,7 +12,8 @@ from training_data import *
 
 
 def fitness_function(e: Entity):
-    return (e.survival_time - WANTED_SURVIVAL_TIME) * (e.energy / MAX_ENERGY) + e.child_number * REPRODUCTION_REWARD
+    predatory_bonus = e.sheep_eaten if e.type == Types.WOLF else 0.0
+    return e.child_number * REPRODUCTION_REWARD + predatory_bonus * PREDATORY_REWARD + (e.survival_time / GENERATION_DURATION) * SURVIVAL_REWARD
 
 def select_parents(population, num_parents):
     population.sort(key=fitness_function, reverse=True)
@@ -67,12 +68,12 @@ def train_population():
         sheep_fitnesses = [fitness_function(s) for s in sheeps]
         best_current_sheep_fitness = max(sheep_fitnesses)
         sheep_fitness_history.append(max(sheep_fitnesses))
-        sheep_mean_fitness_history.append(np.mean(sheep_fitnesses))
+        sheep_mean_fitness_history.append(np.mean(sheep_fitness_history))
         
         wolf_fitnesses = [fitness_function(w) for w in wolfs]
         best_current_wolf_fitness = max(wolf_fitnesses)
         wolf_fitness_history.append(max(wolf_fitnesses))
-        wolf_mean_fitness_history.append(np.mean(wolf_fitnesses))
+        wolf_mean_fitness_history.append(np.mean(wolf_fitness_history))
         
         if best_current_sheep_fitness > best_sheep_fitness:
             best_sheep_fitness = best_current_sheep_fitness
