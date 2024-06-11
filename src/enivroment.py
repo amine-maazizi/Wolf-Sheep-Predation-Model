@@ -1,6 +1,7 @@
 import pygame as pg
 import sys
 from random import randint
+import random
 from time import time
 
 from config import *
@@ -48,10 +49,10 @@ class Environment:
         pg.display.update()
         self.clock.tick(FPS) 
         
-        if (len(self.wolfs) == 0 and len(self.sheeps) == 0) or self.simulation_timer >= GENERATION_DURATION:
+        if (len(self.wolfs) == 0 or len(self.sheeps) == 0) or self.simulation_timer >= GENERATION_DURATION:
             self.simulation_over = True
         
-        return self.simulation_over, self.sheep_history, self.wolf_history
+        return self.simulation_timer, self.sheep_history, self.wolf_history, len(self.sheeps), len(self.wolfs)
     
     def render(self):
         """Handles the rendering part of the simulation"""
@@ -109,31 +110,40 @@ class Environment:
         if population:
             for entity in population:
                 entity.respawn()
-                entity.rect.topleft = self.get_random_position(visited_positions)
                 if entity.type == Types.SHEEP:
+                    pos = self.get_random_position(visited_positions, top_half=True)
                     self.sheeps.append(entity)
                 else:
+                    pos = self.get_random_position(visited_positions, top_half=False)
                     self.wolfs.append(entity)
-                visited_positions.append(entity.rect.topleft)
+                entity.rect.topleft = pos
+                visited_positions.append(pos)
         else:
-            for i in range(SHEEP_POPULATION + WOLF_POPULATION):
-                pos = self.get_random_position(visited_positions)
-                if i < SHEEP_POPULATION:
-                    self.sheeps.append(Sheep(self, self.sprite_manager, pos, NeuralNetwork().to(device)))
-                else:
-                    self.wolfs.append(Wolf(self, self.sprite_manager, pos, NeuralNetwork().to(device)))
+            for i in range(SHEEP_POPULATION):
+                pos = self.get_random_position(visited_positions, top_half=True)
+                self.sheeps.append(Sheep(self, self.sprite_manager, pos, NeuralNetwork().to(device)))
+                visited_positions.append(pos)
+                
+            for i in range(WOLF_POPULATION):
+                pos = self.get_random_position(visited_positions, top_half=False)
+                self.wolfs.append(Wolf(self, self.sprite_manager, pos, NeuralNetwork().to(device)))
                 visited_positions.append(pos)
 
         self.sheep_history = self.sheeps.copy()
         self.wolf_history = self.wolfs.copy()
         self.collision_manager = CollisionManager()
 
-    def get_random_position(self, visited_positions):
-        pos = v2(randint(0, WIDTH - 1), randint(0, HEIGHT - 1)) // TILE_SIZE * TILE_SIZE
+    def get_random_position(self, visited_positions, top_half=True):
+        if top_half:
+            pos = v2(random.randint(0, WIDTH - 1), random.randint(0, HEIGHT // 2 - 1)) // TILE_SIZE * TILE_SIZE
+        else:
+            pos = v2(random.randint(0, WIDTH - 1), random.randint(HEIGHT // 2, HEIGHT - 1)) // TILE_SIZE * TILE_SIZE
         while pos in visited_positions:
-            pos = v2(randint(0, WIDTH - 1), randint(0, HEIGHT - 1)) // TILE_SIZE * TILE_SIZE
+            if top_half:
+                pos = v2(random.randint(0, WIDTH - 1), random.randint(0, HEIGHT // 2 - 1)) // TILE_SIZE * TILE_SIZE
+            else:
+                pos = v2(random.randint(0, WIDTH - 1), random.randint(HEIGHT // 2, HEIGHT - 1)) // TILE_SIZE * TILE_SIZE
         return pos
-
 
     def update_collisions(self):
         self.collisions = {}

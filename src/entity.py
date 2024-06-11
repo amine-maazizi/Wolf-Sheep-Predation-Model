@@ -1,7 +1,7 @@
 import pygame as pg
 from abc import ABC, abstractmethod
 from enum import Enum
-from random import randrange
+from random import randrange, gauss
 import math
 
 from config import *
@@ -30,7 +30,7 @@ class Entity(ABC):
         self.type = None
         
         # Kinematic variables
-        self.speed: int =  30
+        self.speed: int =  1
         self.direction = normalize(v2(randrange(-1, 1), randrange(-1, 1)))
         self.velocity: v2 = v2(0, 0)
 
@@ -43,6 +43,7 @@ class Entity(ABC):
         self.survival_time: float = 0.0
         self.child_number: int = 0
         self.energy: float = MAX_ENERGY
+        self.enery_expenditure = ENERGY_EXPENDITURE_RATE # change this
         
         # Animation related variables
         self.idle_animation_speed = 5
@@ -96,8 +97,8 @@ class Entity(ABC):
             self.rect.top = 0
             
         self.idle = (self.direction == v2_0)
-            
-        self.velocity = self.direction * self.speed * dt
+        
+        self.velocity = self.direction * self.speed 
 
         self.rect.x += self.velocity.x
         self.rect.y += self.velocity.y

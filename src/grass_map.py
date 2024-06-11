@@ -31,9 +31,6 @@ class GrassMap:
         return self.grass_state[x][y] 
     
     def eat_at(self, x, y):
-        # Eats for grass blocks around the sheep in + shape
-        for dx in range(-1, 2):
-            for dy in range(-1, 2):
-                if 0 <= x + dx < self.dimenions[0] and 0 <= y + dy < self.dimenions[1]:
-                    self.grass_state[x + dx][y + dy] = 0.0
+        # Eats the grass in x and y
+        self.grass_state[x][y] = 0.0
         

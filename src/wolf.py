@@ -12,7 +12,7 @@ class Wolf(Entity):
         self.gender = 1 if random() <= WOLF_MALE_ODDS else 0
         super().__init__(env, intial_position, sprite_manager.male_wolf if self.gender else sprite_manager.female_wolf, nn)
         self.type = Types.WOLF
-        self.speed = FPS
+        self.speed = 1.0
         self.sheep_eaten = 0
     
     def handle_collision(self, t: Types, g: int):

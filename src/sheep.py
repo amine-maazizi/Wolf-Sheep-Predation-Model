@@ -12,8 +12,8 @@ class Sheep(Entity):
         self.gender = 1 if random() <= SHEEP_MALE_ODDS else 0
         super().__init__(env, intial_position, sprite_manager.male_sheep if self.gender else sprite_manager.female_sheep, nn)
         self.type = Types.SHEEP
-        self.speed = FPS
-    
+        self.speed = 1
+            
     def eat(self, grass_map):
         # Snapped position
         x, y = int(self.rect.topleft[0] // TILE_SIZE), int(self.rect.topleft[1] // TILE_SIZE)
