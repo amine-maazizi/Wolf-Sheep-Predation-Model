@@ -36,6 +36,7 @@ class Sheep(Entity):
                                 v2(random() * WIDTH, random() * HEIGHT),
                                 NeuralNetwork())
                     child.energy = CHILD_ENERGY
+                    self.env.sheeps.append(child)
                     self.env.sheep_history.append(self.env.sheeps[-1])
     
     def respawn(self):

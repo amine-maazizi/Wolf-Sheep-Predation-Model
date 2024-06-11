@@ -2,12 +2,12 @@ import pygame as pg
 import torch
 
 # Pygame constants
-WIDTH: int = 644
-HEIGHT: int = 644
+WIDTH: int = 322
+HEIGHT: int = 322
 TILE_SIZE: int = 16
 TITLE: str = "Wolf-Sheep predation model"
 FPS: int = 60 
-SCALING_FACTOR: int = 1
+SCALING_FACTOR: int = 2
 
 # Type alias
 v2 = pg.math.Vector2
@@ -28,8 +28,8 @@ SHEEP_MALE_ODDS: float = 0.5
 WOLF_MALE_ODDS: float = 0.5
 
 # Evolutionary algorithm settings
-SHEEP_POPULATION: int = 150
-WOLF_POPULATION: int = 50
+SHEEP_POPULATION: int = 20
+WOLF_POPULATION: int = 10
 SEARCH_RADIUS: float = WIDTH
 REPRODUCTION_REWARD: float = 150.0
 PREDATORY_REWARD: float = 100.0

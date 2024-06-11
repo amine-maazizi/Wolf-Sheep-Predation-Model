@@ -19,21 +19,41 @@ def fitness_function(e: Entity, s: float, n: int):
     
     return entity_survival + generational_duration
 
+
 def select_parents(population, num_parents, sim_time, n_entities):
     population.sort(key=lambda x: fitness_function(x, sim_time, n_entities), reverse=True)
     return population[:num_parents]
 
 def crossover_sheep(parent_1, parent_2):
     child_params = {}
-    for param in parent_1.nn.get_params().keys():
-        child_params[param] = parent_1.nn.get_params()[param] if random() > 0.5 else parent_2.nn.get_params()[param]
+    parent_1_params = list(parent_1.nn.get_params().items())
+    parent_2_params = list(parent_2.nn.get_params().items())
+    crossover_point = int(len(parent_1_params) / 2)
+    
+    for i in range(len(parent_1_params)):
+        param_key = parent_1_params[i][0]
+        if i <= crossover_point:
+            child_params[param_key] = parent_1_params[i][1]
+        else:
+            child_params[param_key] = parent_2_params[i][1]
+    
     return Sheep(parent_1.env, parent_1.env.sprite_manager, v2_0, NeuralNetwork(params=child_params))
 
 def crossover_wolf(parent_1, parent_2):
     child_params = {}
-    for param in parent_1.nn.get_params().keys():
-        child_params[param] = parent_1.nn.get_params()[param] if random() > 0.5 else parent_2.nn.get_params()[param]
+    parent_1_params = list(parent_1.nn.get_params().items())
+    parent_2_params = list(parent_2.nn.get_params().items())
+    crossover_point = int(len(parent_1_params) / 2)
+    
+    for i in range(len(parent_1_params)):
+        param_key = parent_1_params[i][0]
+        if i <= crossover_point:
+            child_params[param_key] = parent_1_params[i][1]
+        else:
+            child_params[param_key] = parent_2_params[i][1]
+    
     return Wolf(parent_1.env, parent_1.env.sprite_manager, v2_0, NeuralNetwork(params=child_params))
+
 
 def mutate_sheep(sheep):
     for param in sheep.nn.get_params().keys():
